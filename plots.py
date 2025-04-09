@@ -13,8 +13,8 @@ import numpy as np
 from matplotlib.ticker import FuncFormatter
 
 
-def load_data(heart_rate_path: str = 'data/bpm_data.csv',
-              sleep_data_path: str = 'data/sleep_data.csv') -> Tuple[pd.DataFrame, pd.DataFrame]:
+def load_data(heart_rate_path: str = 'raw_data/bpm_data.csv',
+              sleep_data_path: str = 'raw_data/sleep_data.csv') -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
     Load heart rate and sleep data from CSV files.
 
@@ -76,6 +76,7 @@ def analyze_deep_sleep_vs_caffeine(sleep_data: pd.DataFrame,
 
     deep_caff = grouped_sleep_data[grouped_sleep_data["is_coffee"] == True]["sleep_deep_duration"]
     deep_nocaff = grouped_sleep_data[grouped_sleep_data["is_coffee"] == False]["sleep_deep_duration"]
+    print(f"Deep Sleep Duration - Caffeine: {deep_caff.mean():.2f} min, No Caffeine: {deep_nocaff.mean():.2f} min")
     t_deep, p_deep = ttest_ind(deep_nocaff, deep_caff, equal_var=False)
     print(f"Deep Sleep - t: {t_deep:.2f}, p: {p_deep:.4f}")
 
@@ -314,6 +315,47 @@ def analyze_awake_count(sleep_data: pd.DataFrame, save_path: str = 'plots/awake_
     # plt.show()
 
 
+def plot_sleep_duration(df_sleep):
+    # Create figure and axis objects explicitly
+    fig, ax = plt.subplots(figsize=(8, 5))
+
+    # Create the bar plot
+    sns_plot = sns.barplot(data=df_sleep, x="is_coffee", y="sleep_duration", ax=ax)
+
+    # Set the x-axis labels
+    ax.set_xticks([0, 1])
+    ax.set_xticklabels(['No Caffeine', 'Caffeine'])
+
+    # Set plot titles and labels
+    ax.set_title("Average Sleep Duration with and without Caffeine")
+    ax.set_ylabel("Sleep Duration (minutes)")
+    ax.set_xlabel("Caffeine Intake")
+
+    # Add annotations in the center of each bar
+    for i, bar in enumerate(ax.patches):
+        # Get the height of the bar
+        height = bar.get_height()
+        # Calculate position for text (center of bar)
+        x_pos = bar.get_x() + bar.get_width() / 2
+        y_pos = height / 2  # Middle of the bar
+
+        # Add the text
+        ax.text(
+            x_pos, y_pos,
+            f'{height:.1f}',
+            ha='center',
+            va='center',
+            color='white',  # White text for better visibility
+            fontweight='bold'  # Make the text bold for better visibility
+        )
+
+    # Ensure tight layout and save
+    plt.tight_layout()
+    plt.savefig('plots/sleep_comparison.png', dpi=300)
+    plt.close()
+    # plt.show()
+
+
 def analyze_bedtime_distribution(sleep_data: pd.DataFrame,
                                  save_path: str = 'plots/bedtime_distribution_by_caffeine.png') -> None:
     """
@@ -370,6 +412,52 @@ def analyze_bedtime_distribution(sleep_data: pd.DataFrame,
     # plt.show()
 
 
+def daily_bpm_overall(df_bpm):
+    plt.figure(figsize=(10, 6))
+
+    # Split into caffeine and no caffeine for all students combined
+    bpm_caff = df_bpm[df_bpm["is_coffee"] == True]["bpm"]
+    bpm_nocaff = df_bpm[df_bpm["is_coffee"] == False]["bpm"]
+
+    # Plot KDEs
+    sns.kdeplot(bpm_caff, label="Caffeine", fill=True, color="deepskyblue", alpha=0.6)
+    sns.kdeplot(bpm_nocaff, label="No Caffeine", fill=True, color="orange", alpha=0.6)
+
+    # Titles and labels
+    plt.title("Heart Rate Density — Caffeine vs No Caffeine (All Students)", fontsize=14)
+    plt.xlabel("Heart Rate (bpm)")
+    plt.ylabel("Density")
+    plt.grid(True)
+    plt.legend()
+
+    plt.tight_layout()
+    plt.savefig("plots/hr_density_aggregated.png", dpi=300)
+    # plt.show()
+
+def sleep_bpm_overall(sleep_data):
+    plt.figure(figsize=(10, 6))
+
+    # Split into caffeine and no caffeine for all students combined
+    bpm_caff = sleep_data[sleep_data["is_coffee"] == True]["avg_hr"]
+    bpm_nocaff = sleep_data[sleep_data["is_coffee"] == False]["avg_hr"]
+    print(f'!!! Heart Rate During Sleep - Caffeine: {bpm_caff.mean():.2f} bpm, No Caffeine: {bpm_nocaff.mean():.2f} bpm')
+
+    # Plot KDEs
+    sns.kdeplot(bpm_caff, label="Caffeine", fill=True)
+    sns.kdeplot(bpm_nocaff, label="No Caffeine", fill=True)
+
+    # Titles and labels
+    plt.title("Heart Rate During Sleep — Caffeine vs No Caffeine (All Students)", fontsize=14)
+    plt.xlabel("Heart Rate (bpm)")
+    plt.ylabel("Density")
+    plt.grid(True)
+    plt.legend()
+
+    plt.tight_layout()
+    plt.savefig("plots/sleep_hr_density_overall.png", dpi=300)
+    # plt.show()
+
+
 def filter_sleep(sleep_data: pd.DataFrame) -> pd.DataFrame:
     """
     Process sleep data for analysis.
@@ -394,6 +482,9 @@ def main() -> None:
     df_bpm, df_sleep = load_data()
 
     # Run analyses
+    plot_sleep_duration(df_sleep)
+    daily_bpm_overall(df_bpm)
+    sleep_bpm_overall(df_sleep)
     analyze_deep_sleep_vs_caffeine(df_sleep)
     visualize_hr_density_by_student(df_bpm)
     analyze_sleep_hr_by_caffeine(filter_sleep(df_sleep))
