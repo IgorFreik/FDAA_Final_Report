@@ -52,7 +52,8 @@ def extract_values(df: pd.DataFrame):
     df_sleep["bedtime"] = df_sleep["Value"].apply(lambda x: json.loads(x).get("bedtime", None))
     df_sleep["bedtime"] = pd.to_datetime(df_sleep["bedtime"], unit='s')
     df_sleep["awake_count"] = df_sleep["Value"].apply(lambda x: json.loads(x).get("awake_count", None))
-    # return df_bpm.drop(columns=['Value']), df_sleep.drop(columns=['Value'])
+    df_bpm = df_bpm.drop(columns=['Value', 'Key'])
+    df_sleep = df_sleep.drop(columns=['Value', 'Key'])
     return df_bpm, df_sleep
 
 def filter_sleep(df_sleep: pd.DataFrame) -> pd.DataFrame:
