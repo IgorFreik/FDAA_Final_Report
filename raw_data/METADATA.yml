@@ -9,8 +9,9 @@ Authors:
 Date Collected: April 2025
 Description: >
   This dataset contains pseudonymized data on heart rate (bpm) and sleep quality
-  metrics collected over 14 consecutive days from 5 students. Data includes
-  bpm collected on a minutely basis, sleep duration, sleep stage proportions (deep / shallow), average sleep heart rates.
+  metrics collected over 14 consecutive days from 5 students. All of the data was collected using
+  Mi Band 9 devices. Data includes bpm collected on a minutely basis, sleep duration, 
+  sleep stage proportions (deep / shallow), average sleep heart rates.
 
 Datasets:
   - bpm_data.csv
@@ -83,6 +84,6 @@ Data Variables:
 Data Format: CSV
 License: CC-BY-NC (Non-commercial use only)
 Access Conditions: Available upon request from study supervisor.
-Contact: i.freik@student.tue.nl
+Contact: j.i.kuczynski@student.tue.nl
 Data Processing: Raw data pseudonymized and cleaned using Python scripts (available in GitHub repository).
 Retention Period: Data will be deleted 1 month after project completion (May 2025).
