@@ -13,3 +13,7 @@
    ```bash
    python model.py
    ```
+
+## Dataset
+
+Our dataset adheres to the FAIR principles and GDPR regulations. Please find the dataset metadata in the "raw_data" folder.  
