@@ -1,5 +1,8 @@
 ## How to run
 
+0. Ensure the data for the analysis is stored at the `raw_data` folder.
+
+
 1. Run the data preparation script to prepare the data:
    ```bash
    python data_prep.py
