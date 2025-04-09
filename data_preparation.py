@@ -1,18 +1,14 @@
 import pandas as pd
 import os
 import json
-from datetime import datetime, timedelta
-import matplotlib.pyplot as plt
-import seaborn as sns
-import numpy as np
-from scipy.stats import ttest_ind
+from datetime import datetime
 from typing import Optional
 
 
 STUDY_START = datetime(2025, 3, 14).date()
 STUDY_END = datetime(2025, 3, 27).date()
 COFFEE_END = datetime(2025, 3, 20).date()
-DATA_FOLDER = './data/'
+DATA_FOLDER = './raw_data/'
 APPLY_INTERPOLATION = True
 APPLY_SMOOTHING = False
 WINDOW_SIZE = None
@@ -31,7 +27,10 @@ def load_and_merge(data_folder: str) -> pd.DataFrame:
 
 def convert_time(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
-    df['Time'] = pd.to_datetime(df['Time'], unit='s')
+    try:
+        df['Time'] = pd.to_datetime(df['Time'], unit='s')
+    except ValueError:
+        df['Time'] = pd.to_datetime(df['Time'])
     df['Date'] = df['Time'].dt.date
     return df
 
@@ -102,8 +101,6 @@ def interpolate_bpm_data(df_bpm: pd.DataFrame) -> pd.DataFrame:
         # For timestamps with multiple readings, take the mean
         agg_df = merged.groupby('Time').agg({
             'Uid': 'first',
-            # 'Key': 'first',
-            # 'Value': 'first',
             'Date': 'first',
             'is_coffee': 'first',
             'bpm': 'mean'
