@@ -1,0 +1,92 @@
+Title: Heart Rate and Sleep Quality Dataset of 5 Students
+Authors:
+  - Name: Igor Freik
+  - Name: Jakub Kuczynski
+  - Name: Yasem Karaca
+  - Name: Gabriela Czajkowska
+  - Name: Gus Cremers
+
+Date Collected: April 2025
+Description: >
+  This dataset contains pseudonymized data on heart rate (bpm) and sleep quality
+  metrics collected over 14 consecutive days from 5 students. Data includes
+  bpm collected on a minutely basis, sleep duration, sleep stage proportions (deep / shallow), average sleep heart rates.
+
+Datasets:
+  - bpm_data.csv
+  - sleep_data.csv
+
+Data Variables:
+  bpm_data.csv:
+    - Uid:
+        Description: Pseudonymized unique identifier of the participant.
+        Format: Integer (0 to 4)
+
+    - Time:
+        Description: Timestamp of the wake-up time or sleep data recording.
+        Format: YYYY-MM-DD HH:MM:SS (24-hour clock)
+
+    - Date:
+        Description: Date of waking up / sleep data attribution.
+        Format: YYYY-MM-DD
+
+    - is_coffee:
+        Description: Indicator whether the participant consumed coffee on that day.
+        Format: Boolean (True = Coffee consumed, False = No coffee)
+
+    - bpm:
+        Description: Heart rate in beats per minute
+        Format: Float
+
+    - bpm_delta:
+        Description: Change from previous measurement
+        Format: Float
+
+  sleep_data.csv:
+    - Uid:
+        Description: Pseudonymized unique identifier of the participant.
+        Format: Integer (0 to 4)
+
+    - Time:
+        Description: Timestamp of the wake-up time or sleep data recording.
+        Format: YYYY-MM-DD HH:MM:SS (24-hour clock)
+
+    - Date:
+        Description: Date of waking up / sleep data attribution.
+        Format: YYYY-MM-DD
+
+    - is_coffee:
+        Description: Indicator whether the participant consumed coffee on that day.
+        Format: Boolean (True = Coffee consumed, False = No coffee)
+
+    - sleep_duration:
+        Description: Total sleep duration in minutes (including all sleep phases).
+        Format: Integer (minutes)
+
+    - sleep_deep_duration:
+        Description: Duration of deep sleep phase in minutes.
+        Format: Integer (minutes)
+
+    - avg_hr:
+        Description: Average heart rate during sleep (beats per minute).
+        Format: Float
+
+    - sleep_rem_duration:
+        Description: Duration of REM sleep phase in minutes.
+        Format: Integer (minutes)
+
+    - bedtime:
+        Description: Timestamp of when the participant went to bed.
+        Format: YYYY-MM-DD HH:MM:SS (24-hour clock)
+
+    - awake_count:
+        Description: Number of awakenings detected during sleep.
+        Format: Integer (count)
+
+
+Data Format: CSV
+License: CC-BY-NC (Non-commercial use only)
+Access Conditions: Available upon request from study supervisor.
+Contact: i.freik@student.tue.nl
+Data Processing: Raw data pseudonymized and cleaned using Python scripts (available in GitHub repository).
+Retention Period: Data will be deleted 1 month after project completion (May 2025).
