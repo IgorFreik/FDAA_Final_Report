@@ -159,9 +159,17 @@ def prepare_data(data_folder: str, apply_interpolation: bool = True, apply_smoot
         Tuple of (df_bpm, df_sleep) DataFrames
     """
     df = load_and_merge(data_folder)
-    df = convert_time(df)
-    df = limit_time_period(df)
     df_bpm, df_sleep = extract_values(df)
+
+    # Save raw pseudoanonymized data for FAIR principles adherence
+    df_bpm.to_csv(os.path.join(data_folder, 'bpm_raw_data.csv'), index=False)
+    df_sleep.to_csv(os.path.join(data_folder, 'sleep_raw_data.csv'), index=False)
+
+    df_bpm = convert_time(df_bpm)
+    df_bpm = limit_time_period(df_bpm)
+
+    df_sleep = convert_time(df_sleep)
+    df_sleep = limit_time_period(df_sleep)
     df_sleep = filter_sleep(df_sleep)
 
     if apply_interpolation:

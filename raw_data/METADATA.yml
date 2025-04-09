@@ -17,7 +17,7 @@ Datasets:
   - sleep_data.csv
 
 Data Variables:
-  bpm_data.csv:
+  bpm_raw_data.csv:
     - Uid:
         Description: Pseudonymized unique identifier of the participant.
         Format: Integer (0 to 4)
@@ -38,11 +38,7 @@ Data Variables:
         Description: Heart rate in beats per minute
         Format: Float
 
-    - bpm_delta:
-        Description: Change from previous measurement
-        Format: Float
-
-  sleep_data.csv:
+  sleep_raw_data.csv:
     - Uid:
         Description: Pseudonymized unique identifier of the participant.
         Format: Integer (0 to 4)
