@@ -11,6 +11,7 @@ from typing import Dict, List, Tuple, Optional, Union, Any
 
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.model_selection import cross_val_score, cross_val_predict, StratifiedKFold
@@ -19,8 +20,8 @@ import numpy as np
 
 # Configuration constants
 TARGET_VAR: str = 'is_coffee'
-HR_PATH: str = 'data/bpm_data.csv'
-SLEEP_PATH: str = 'data/sleep_data.csv'
+HR_PATH: str = 'raw_data/bpm_data.csv'
+SLEEP_PATH: str = 'raw_data/sleep_data.csv'
 RANDOM_SEED: int = 42
 PLOTS_DIR: str = 'plots'
 
@@ -229,6 +230,54 @@ def visualize_feature_importance(
         print(f"- {name}: {importance:.3f}")
 
 
+def visualize_confusion_matrix(
+        y_true: pd.Series,
+        y_pred: np.ndarray,
+        target_names: List[str],
+        save_path: Optional[str] = None
+) -> None:
+    """
+    Visualize and save confusion matrix plot.
+
+    Args:
+        y_true: True target values
+        y_pred: Predicted target values
+        target_names: Names of the target classes
+        save_path: Path to save the plot (optional)
+    """
+    # Calculate confusion matrix
+    conf_matrix = confusion_matrix(y_true, y_pred)
+
+    # Create figure
+    plt.figure(figsize=(8, 6))
+
+    # Create heatmap
+    sns.heatmap(
+        conf_matrix,
+        annot=True,
+        fmt='d',
+        cmap='Blues',
+        xticklabels=target_names,
+        yticklabels=target_names
+    )
+
+    # Add labels and title
+    plt.xlabel('Predicted')
+    plt.ylabel('True')
+    plt.title('Confusion Matrix for Caffeine Prediction')
+    plt.tight_layout()
+
+    # Save the plot if path provided
+    if save_path:
+        directory = os.path.dirname(save_path)
+        if directory:
+            os.makedirs(directory, exist_ok=True)
+        plt.savefig(save_path)
+
+    # Show plot
+    plt.show()
+
+
 def main() -> None:
     """
     Main function to run the entire data processing and modeling pipeline.
@@ -250,9 +299,16 @@ def main() -> None:
     # Print evaluation metrics
     print_model_evaluation(y, y_pred, cv_scores, target_names=["No Caffeine", "Caffeine"])
 
+    # Ensure plots directory exists
+    os.makedirs(PLOTS_DIR, exist_ok=True)
+
     # Visualize feature importance
-    save_path = os.path.join(PLOTS_DIR, 'feature_importance_plot.png')
-    visualize_feature_importance(model, list(X.columns), save_path)
+    feature_imp_path = os.path.join(PLOTS_DIR, 'feature_importance_plot.png')
+    visualize_feature_importance(model, list(X.columns), feature_imp_path)
+
+    # Visualize confusion matrix
+    conf_matrix_path = os.path.join(PLOTS_DIR, 'confusion_matrix_plot.png')
+    visualize_confusion_matrix(y, y_pred, target_names=["No Caffeine", "Caffeine"], save_path=conf_matrix_path)
 
 
 if __name__ == '__main__':
